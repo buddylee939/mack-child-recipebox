@@ -1,0 +1,3 @@
+# Steps
+
+- rails new recipebox
