@@ -77,7 +77,7 @@ class RecipesController < ApplicationController
 
   def require_permission
     @user = current_user
-    if @recipe.user_id != @user.id
+    if !user_signed_in? || @recipe.user_id != @user.id
       redirect_to root_path, notice: "Sorry, you're not allowed to view that page"
     end
   end
