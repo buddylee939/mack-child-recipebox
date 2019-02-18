@@ -1,4 +1,5 @@
 class Recipe < ApplicationRecord
+  belongs_to :user
   has_one_attached :image
   has_many :ingredients, inverse_of: :recipe
   has_many :directions, inverse_of: :recipe

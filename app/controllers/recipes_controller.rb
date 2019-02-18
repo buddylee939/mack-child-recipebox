@@ -1,6 +1,7 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
-
+  before_action :require_permission, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!, except: [:index, :show]
   # GET /recipes
   # GET /recipes.json
   def index
@@ -14,7 +15,7 @@ class RecipesController < ApplicationController
 
   # GET /recipes/new
   def new
-    @recipe = Recipe.new
+    @recipe = current_user.recipes.build
   end
 
   # GET /recipes/1/edit
@@ -24,7 +25,7 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
-    @recipe = Recipe.new(recipe_params)
+    @recipe = current_user.recipes.build(recipe_params)
 
     respond_to do |format|
       if @recipe.save
@@ -73,4 +74,12 @@ class RecipesController < ApplicationController
                                       ingredients_attributes: [:id, :name, :_destroy], 
                                       directions_attributes: [:id, :step, :_destroy])
     end
+
+  def require_permission
+    @user = current_user
+    if @recipe.user_id != @user.id
+      redirect_to root_path, notice: "Sorry, you're not allowed to view that page"
+    end
+  end
 end
+
